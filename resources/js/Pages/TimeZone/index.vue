@@ -72,21 +72,8 @@ p {
     </div>
 
     <div>
-        <!-- <select name="listtimezone" id="listtimezone">
-            <option :value="zone" v-for="zone in timezone" :key="zone" v-change="updatetime">{{ zone }}</option>
-        </select> -->
-
-        <!-- <select :onchange="timezoneFilter()"
-            v-model="selectTimezone"
-        >
-            <option v-for="zone in timezone" :value="zone.id" :key="zone" >
-                {{ zone }}
-            </option>
-        </select> -->
-
-        <select name="LeaveType" @change="timezoneFilter($event)" class="form-control" v-model="key">
+        <select name="LeaveType" @change="timezoneFilter($event)" class="form-control" v-model="selectTimezone" >
             <option :value="zone" v-for="zone in timezone" :key="zone">{{ zone }}</option>
-            <!-- <option value="2">On Demand Leave</option> -->
         </select>
     </div>
 
@@ -119,26 +106,11 @@ p {
         },
         mounted() {
             const moment = require('moment-timezone');
+            this.selectTimezone = this.$page.props.lasttimezone ? this.$page.props.lasttimezone.to : '';
 
-            // //Current Date
-            // var CurrentDate = moment().toISOString();
-            // console.log(CurrentDate);
-
-            // /*var date = '2018/03/23 05:00:00 +0000';*/
-            // var timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            // console.log(timezone);
-
-            // //Current Date in server timezone
-            // var result = this.toTimeZone(CurrentDate, timezone);
-            // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone);
-            // console.log(result);
-
-            // var result = this.toTimeZone(result, 'America/Los_Angeles');
-            // console.log('America/Los_Angeles');
-            // console.log(result);
             this.localtimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             var timerID = setInterval(this.localTime, 1000);
-            var timerID = setInterval(this.che, 1000);
+            var timerID = setInterval(this.getDateTime, 1000);
 
             this.localTime();
 
@@ -165,14 +137,19 @@ p {
             },
 
             timezoneFilter(event) {
-                console.log(event.target.value)
                 this.selectTimezone = event.target.value;
-                this.che();
+                const formData = new FormData();
+                formData.append('count', 1);
+                formData.append('fromZone', this.$page.props.lasttimezone ? this.$page.props.lasttimezone.to : '');
+                formData.append('toZone', this.selectTimezone);
+                axios.post(this.route('updateTimeZone'), Object.assign(formData)).then((data) => {
+                    console.log(data);
+                });
+                this.getDateTime();
             },
 
-            che() {
+            getDateTime() {
                 if(this.selectTimezone) {
-
                     this.dynatime = this.zeroPadding(moment().tz(this.selectTimezone).format('h'), 2) + ':' + this.zeroPadding(moment().tz(this.selectTimezone).minute(), 2) + ':' + this.zeroPadding(moment().tz(this.selectTimezone).second(), 2) + ' ' +moment().tz(this.selectTimezone).format('A');
                     this.dynadate = this.zeroPadding(moment().tz(this.selectTimezone).year(), 4) + '-' + this.zeroPadding(moment().tz(this.selectTimezone).month()+1, 2) + '-' + this.zeroPadding(moment().tz(this.selectTimezone).date(), 2) + ' ' + moment().tz(this.selectTimezone).format('MMMM');
                     this.dynatimezone = this.selectTimezone;

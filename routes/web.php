@@ -39,3 +39,4 @@ Route::middleware([
 
 Route::get('/timezone', [TimeZoneController::class, 'index']);
 Route::post('/updateTimeZone', [TimeZoneController::class, 'updateTimeZone'])->name('updateTimeZone');
+Route::get('/updateUsercount', [TimeZoneController::class, 'updateUsercount'])->name('updateUsercount');

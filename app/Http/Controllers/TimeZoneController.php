@@ -67,7 +67,7 @@ class TimeZoneController extends Controller
                 );
                 TimeZoneUser::create($data);
             }
-            return response()->json(['statusCode' => 200, 'message' => 'Timezone updated']);
+            return response()->json(['statusCode' => 200, 'message' => 'Site visitor count updated.']);
         } catch (\exception $e) {
             return response()->json(['statusCode' => 500, 'message' => $e]);
         }

@@ -114,6 +114,10 @@ p {
 
             this.localTime();
 
+            axios.get(this.route('updateUsercount')).then((data) => {
+                console.log(data);
+            });
+
         },
 
         methods: {
